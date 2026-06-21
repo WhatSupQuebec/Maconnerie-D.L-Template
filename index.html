@@ -973,57 +973,63 @@
 
     // ========== SLIDER ==========
     (function initSlider() {
-      const images = [
-        'PhotoJob/hxl04r4cpqbg1.png',
-        'PhotoJob/blurred-vision-678x446_compressed.jpg'
+      var images = [
+        'PhotoJob/1.jpg',
+        'PhotoJob/2.jpg',
+        'PhotoJob/3.jpg',
+        'PhotoJob/4.jpg'
       ];
-      const track = document.getElementById('sliderTrack');
-      const dots = document.getElementById('sliderDots');
-      const prev = document.getElementById('sliderPrev');
-      const next = document.getElementById('sliderNext');
-      let current = 0;
-
-      images.forEach((src, i) => {
-        const slide = document.createElement('div');
-        slide.classList.add('slider-slide');
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = 'Réalisation Maçonnerie D.L';
-        img.loading = 'lazy';
-        slide.appendChild(img);
-        track.appendChild(slide);
-
-        const dot = document.createElement('button');
-        dot.classList.add('slider-dot');
-        if (i === 0) dot.classList.add('active');
-        dot.dataset.index = i;
-        dot.addEventListener('click', () => goTo(i));
-        dots.appendChild(dot);
-      });
+      var track = document.getElementById('sliderTrack');
+      var dots = document.getElementById('sliderDots');
+      var prev = document.getElementById('sliderPrev');
+      var next = document.getElementById('sliderNext');
+      var current = 0;
+      var len = images.length;
 
       function goTo(index) {
         current = index;
         track.style.transform = 'translateX(-' + (current * 100) + '%)';
-        document.querySelectorAll('.slider-dot').forEach((d, i) => {
-          d.classList.toggle('active', i === current);
-        });
+        var allDots = document.querySelectorAll('.slider-dot');
+        for (var d = 0; d < allDots.length; d++) {
+          allDots[d].classList.toggle('active', d === current);
+        }
       }
 
-      prev.addEventListener('click', () => {
-        goTo(current === 0 ? images.length - 1 : current - 1);
+      for (var i = 0; i < len; i++) {
+        (function(idx) {
+          var slide = document.createElement('div');
+          slide.className = 'slider-slide';
+          var img = document.createElement('img');
+          img.src = images[idx];
+          img.alt = 'R\u00e9alisation Ma\u00e7onnerie D.L';
+          img.loading = 'lazy';
+          slide.appendChild(img);
+          track.appendChild(slide);
+
+          var dot = document.createElement('button');
+          dot.className = 'slider-dot';
+          if (idx === 0) dot.classList.add('active');
+          dot.addEventListener('click', function() { goTo(idx); });
+          dots.appendChild(dot);
+        })(i);
+      }
+
+      prev.addEventListener('click', function() {
+        goTo(current === 0 ? len - 1 : current - 1);
       });
-      next.addEventListener('click', () => {
-        goTo(current === images.length - 1 ? 0 : current + 1);
+      next.addEventListener('click', function() {
+        goTo(current === len - 1 ? 0 : current + 1);
       });
 
-      let autoplay = setInterval(() => {
-        goTo(current === images.length - 1 ? 0 : current + 1);
+      var autoplay = setInterval(function() {
+        goTo(current === len - 1 ? 0 : current + 1);
       }, 5000);
 
-      document.getElementById('slider').addEventListener('mouseenter', () => clearInterval(autoplay));
-      document.getElementById('slider').addEventListener('mouseleave', () => {
-        autoplay = setInterval(() => {
-          goTo(current === images.length - 1 ? 0 : current + 1);
+      var sliderEl = document.getElementById('slider');
+      sliderEl.addEventListener('mouseenter', function() { clearInterval(autoplay); });
+      sliderEl.addEventListener('mouseleave', function() {
+        autoplay = setInterval(function() {
+          goTo(current === len - 1 ? 0 : current + 1);
         }, 5000);
       });
     })();
